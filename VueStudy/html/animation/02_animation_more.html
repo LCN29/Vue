@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+		
+		<style>
+			.slide-fade-enter-active {
+			  transition: all .3s ease;
+			}
+			.slide-fade-leave-active {
+			  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+			}
+			.slide-fade-enter, .slide-fade-leave-to{
+				transform: translateX(10px);
+  				opacity: 0;
+			}
+			
+			/*==============================================*/
+			
+			.component-fade-enter-active, .component-fade-leave-active {
+			    transition: opacity .3s ease;
+			}
+			.component-fade-enter, .component-fade-leave-to{
+			    opacity: 0;
+			}
+		</style>
+	</head>
+	<body>
+		
+		<div id="example1">
+			<!--
+				1,当相同标签名的元素切换时，需要通过 key 特性设置唯一的值来标记
+				用来让 Vue 区分它们 ，否则 Vue 为了效率只会替换相同标签内部的内容
+			-->
+			<transition name='slide-fade'>
+			  <button v-if="isEditing" key="save" @click="change">Save</button>
+			  <button v-else key="edit" @click="change">Edit</button>
+			</transition>
+			
+		</div>
+		
+		<div id="example2">
+			<!-- 2，example1 的效果可以简化为 这样 -->
+			<transition name='slide-fade'> 
+			  <button :key="isEditing" @click="change">
+			    {{ isEditing ? 'Save' : 'Edit' }}
+			  </button>
+			</transition>
+		</div>
+		
+		
+		<!-- 3，多个元素-->
+		<div id="example3">
+			<transition name='slide-fade'> 
+			  <button v-if="docState === 'saved'" key="saved" @click="change" >Edit</button>
+			  <button v-if="docState === 'edited'" key="edited" @click="change" >Save</button>
+			  <button v-if="docState === 'editing'" key="editing" @click="change" >Cancel</button>
+			</transition>
+		</div>
+		
+		
+		<div id="example4">
+			<!-- 4，example3的简化 -->
+			<transition name='slide-fade'> 
+			  <button v-bind:key="docState" @click="change">
+			    {{ docState }}
+			  </button>
+			</transition>
+		</div>
+		
+		<div id="example5">
+			<!--5，如上 ，<transition>默认enter和leave时同时发生的，
+			所以有了上面的奇特效果 修改 过渡模式 mode  
+			in-out：新元素先进行过渡，完成之后当前元素过渡离开
+			out-in：当前元素先进行过渡，完成之后新元素过渡进入。
+		-->
+			<transition name='slide-fade' mode="out-in"> 
+			  <button v-bind:key="docState" @click="change">
+			    {{ docState }}
+			  </button>
+			</transition>
+		</div>
+		
+		
+		<div id="example6">
+			<!-- 6，多组件过渡  不需要使用 key-->
+			<button @click="change" >change</button>
+			<transition name="component-fade" mode="out-in">
+				<component :is="view"></component>
+			</transition>
+		</div>
+		
+		
+		<script>
+			var example1 = new Vue({
+				el : '#example1',
+				data : {
+					isEditing : true,
+				},
+				methods : {
+					change(){
+						this.isEditing = !this.isEditing;
+					}
+				}
+			});
+			
+			/*===========================================*/
+			var example2 = new Vue({
+				el : '#example2',
+				data : {
+					isEditing : true,
+				},
+				methods : {
+					change(){
+						this.isEditing = !this.isEditing;
+					}
+				}
+			});
+			
+			/*===============================================*/
+			
+			var example3 = new Vue({
+				el : '#example3',
+				data : {
+					docState : 'saved',
+				},
+				methods : {
+					change: function () {
+						switch (this.docState) {
+					      case 'saved': {
+					      	this.docState = 'edited';
+					      	break;
+					      }
+					      case 'edited': {
+					      	this.docState = 'editing';
+					      	break;
+					      }
+					      case 'editing': {
+					      	this.docState = 'saved';
+					      	break;
+					      }
+					    }
+					}
+				}
+			});
+			
+			/*=========================================================*/
+			var example4 = new Vue({
+				el : '#example4',
+				data : {
+					docState : 'saved',
+				},
+				methods : {
+					change: function () {
+						switch (this.docState) {
+					      case 'saved': {
+					      	this.docState = 'edited';
+					      	break;
+					      }
+					      case 'edited': {
+					      	this.docState = 'editing';
+					      	break;
+					      }
+					      case 'editing': {
+					      	this.docState = 'saved';
+					      	break;
+					      }
+					    }
+					}
+				}
+			});
+			
+			/*=========================================================*/
+			
+			var example5 = new Vue({
+				el : '#example5',
+				data : {
+					docState : 'saved',
+				},
+				methods : {
+					change: function () {
+						switch (this.docState) {
+					      case 'saved': {
+					      	this.docState = 'edited';
+					      	break;
+					      }
+					      case 'edited': {
+					      	this.docState = 'editing';
+					      	break;
+					      }
+					      case 'editing': {
+					      	this.docState = 'saved';
+					      	break;
+					      }
+					    }
+					}
+				}
+			});
+			
+			/*===================================================*/
+			
+			var example6 = new Vue({
+				el : '#example6',
+				data : {
+					view: 'v-a'
+				},
+				components :{
+					'v-a': {
+				        template: '<div>组件A</div>'
+				    },
+				    'v-b': {
+				      	template: '<div>组件B</div>'
+				    }
+				},
+				methods : {
+					change(){
+						this.view = this.view === 'v-a' ? 'v-b' : 'v-a';
+					}
+					
+				}
+			});
+			
+		</script>
+	</body>
+</html>

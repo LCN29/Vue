@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		
+		<!-- 
+			vue包含了一组观察数组的变异方法，都可以触发视图的更新
+			变异方法 ： 修改原来的数组
+			非变异方法 ： 不会修改原来的数组，但是会返回一个新的数组
+		-->
+		<div id="example">
+			<ul>
+				<li v-for=" (item ,index) in arr" :key="item.id"> 
+					{{item.message}}
+					<input type="button"  :value="item.message"/>
+				</li>
+			</ul>
+		</div>
+		
+		<div id='example2'>
+			<p v-for="( value ,key ) in obj">
+				{{value}}
+			</p>
+			<ul>
+				<li v-for='num in filterNumber' >{{num}}</li>
+			</ul>
+		</div>
+		
+		<script>
+			var example = new Vue({
+				el : '#example',
+				data : {
+					arr : [
+						{id: 1 , message : 'push'},
+						{id: 2 , message : 'pop'},
+						{id: 3 , message : 'shift'},
+						{id: 4 , message : 'unshift'},
+						{id: 5 , message : 'splice'},
+						{id: 6 , message : 'sort'},
+						{id: 7 , message : 'reverse'},
+						
+						/* 下面3个为非变异方法 */
+						{id: 8 , message : 'filter'},
+						{id: 9 , message : 'concat'},
+						{id: 10 , message : 'slice'},
+					],
+				}
+			});
+			
+			var aBtn = document.getElementsByTagName('input');
+			
+			for(var i = 0; i<aBtn.length; i++){
+				
+				aBtn[i].onclick=function(){
+					var value = this.getAttribute('value');
+					
+					switch(value){
+						case 'push':
+						/* 向数组尾部添加一个 */
+							example.arr.push({id:8,message:'我是push进来的'});
+						break;
+						case 'pop' :
+						/*删除数组的最后一个 */
+							example.arr.pop();
+						break;
+						case 'shift' :
+						/* 直接删除数组的第一个，并返回这一项，没有则undefind*/
+							var first= example.arr.shift();
+							console.log(first);
+						break;
+						case 'unshift' :
+						/* 直接向数组的头部添加一项，并返回数组的长度*/
+							example.arr.unshift({id:8,message:'我是unshift进来的'});
+						break;
+						case 'splice' :
+						/* 增，删 数据 
+						 	arg1 : 必需， 在第几个开始增加/删除 位置从1开始数 
+						 	可以为负数 -1 指最后一个元素，-2 指倒数第二个元素
+						 	
+						 	arg2 : 必需，删除几个  0表示不删除
+						 	arg3 : 可选， 添加的项
+						 	
+						 	[1,2,3,4]
+						 	
+						 	splice(1,0,5); [1,5,2,3,4] 删除0个，在1后面添加5
+						 	splice(2,1,6); [1,2,6,4] 删除1个，删除2位，并在此处插入6
+						 	splice(2,2,6); [1,2,6] 删除2个，添加1个
+						 	
+						 * */
+							example.arr.splice(4,1,{id:9,message:'新的'});
+						break;
+						case 'sort' :
+						/* 排序  arg 可选，fun  */
+							example.arr.sort(function(a,b){
+								return a-b;
+							});
+						break;
+						case 'reverse':
+						/* 翻转 */
+							example.arr.reverse();
+						break;
+						case 'filter':
+							//过滤 arg 函数 筛选条件
+							var newArr = example.arr.filter(function(item){
+								return item.id>7;
+							});
+							//非变异方法原来的数组不会改变，不会发生刷新
+							//刷新方法 重新赋值
+							example.arr = newArr;
+						break;
+						case 'concat' :
+							//连接2个或者2个以上的数组 参数 可以为 数组 或者子项
+							var arr1 = [{id: 10, message: 'concat1'}];
+							var arr2 = {id:11, message : 'concat2'};
+							var newArr = example.arr.concat(arr1,arr2,{id:12,message:'concat3'});
+							example.arr = newArr;
+						break;
+						case 'slice' :
+							//从数组中截取想要的数组 
+							// arg1 开始的位置 arg2 可选 结束的位置，没有，默认到最后一个
+							//从第1个位置后面开始到第2个位置（包含第2个）
+							var newArr = example.arr.slice(1,2);
+							example.arr = newArr;
+						break;
+					}
+				}
+			}
+			
+			/*
+			  	在 vue 中
+			  	arr.arr[index] = newValue; arr.arr.length = newLength;
+			  	都是不起作用的
+			  
+			  	可以这样解决
+			 	Vue.set(arr.arr, index, newValue)
+			 
+			 	arr.arr.splice(index, 1, newValue)
+			 
+			 	arr.arr.splice(newLength); ?????? 参数2 必需的怎么没了？
+			 */
+			
+			var example2 = new Vue({
+				el : '#example2',
+				data : {
+					a : '1',
+					obj : {
+						name : 'LCN'
+					},
+					num : [1,3,5,6,7,8,9],
+				},
+				computed :{
+					filterNumber : function(){
+						return this.num.filter(function(item){
+							return item%2 === 1 ;
+						});
+					}
+				}
+			});
+			
+			/*
+			 	对于已经创建的Vue对象，向里面的data添加新的值，是没用的
+			 	second.d = 6; 没用的
+			 	
+			 	但是如果data是一个对象，我们可以向对象添加属性 Vue.set(object, key, value)
+			 	1， Vue.set(second.obj, age， 18);
+			 	2，this.$set(this.obj, sex, '男');
+			 	3,this.obj = Object.assign({}, this.obj, {
+					  interst:'读书'
+				 })
+			*/
+		</script>
+	</body>
+</html>

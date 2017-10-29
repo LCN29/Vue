@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+		<style>
+
+		</style>
+	</head>
+	<body>
+		
+		<div id="vif">
+			<p v-if='show'>显示内容</p>
+			<p v-if='!show'>不显示内容</p>
+			
+			
+			<!--
+				v-if = true
+				将标签渲染出来
+				v-if = false
+				不会渲染标签，所以看不见的
+				
+				v-show 和 v-if的区别
+				1，v-if 惰性的，条件为假时，什么也不做，当第一次为真时，才会局部编辑（然后缓存下来）
+			 	2，v-show 只是在元素的样式添加上了display:none; 其本身已经被渲染出来了
+			 	3，v-show 不支持 template,
+			 	4,需要频繁切换的，用v-show，运行时条件不太可能改变的，用v-if，
+			-->
+			
+			<template v-if='ok'>
+				<p>标题</p>
+				<p>图片</p>
+				<p>内容</p>
+			</template>
+			
+			<!--
+				当要切换的元素比较多时，可以用一个template将全部元素包起来
+				真正显示时template不会显示被渲染出来的	
+			-->
+			
+		</div>
+		
+		<script>
+			
+			var vif = new Vue({
+				el : '#vif',
+				data : {
+					show : true,
+					ok : true,
+				}
+			});
+			
+		</script>
+	</body>
+</html>

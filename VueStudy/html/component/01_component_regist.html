@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		
+		<!-- 使用时，尽量使用双标签，单标签，多个时只会显示一个 -->
+		<!-- 组件只能在 vue实例中使用，直接html标签加自定义组件，是不会显示的 -->
+		<div id="example" >
+			<my-component></my-component>
+			<my-component></my-component>
+		</div>
+		
+		
+		<div id="example2" style="background: yellow;">
+			<my-component></my-component>
+			<my-component2></my-component2>
+		</div>
+		
+		<div id="example3" style="background: orange;">
+			<my-component></my-component>
+			<my-component3></my-component3>
+		</div>
+		
+		<div id="example4" style="background: lightblue;">
+			<my-component4></my-component4>
+		</div>
+		
+		<!--
+			特殊标签 有一些标签对其本身里面的标签是有限制的，
+			如 table 里面必须为 tr ,select 里面为 option
+			这是将自定义组件渲染到其里面，不会成功的，如1
+			看标签，会发现 my-component被渲染在table的外面
+			
+			如2，用一个允许的标签 加上 is="你的组件名"
+			就可以渲染成功
+			
+			以下3种情况则不存在这种情况
+			.vue 组件
+			<script type="text/x-template">
+			JavaScript 内联模板字符串	
+		-->
+		<div id="example5" style="background: lavender; ">
+			<!-- 1 -->
+			<table>
+				<my-component></my-component>
+			</table>
+			
+			<table>
+				<tr is="my-component" ></tr>
+			</table>
+		</div>
+		
+		
+		
+		
+		<script>
+
+			//1,注册全局组件 所有地方都可以使用
+			Vue.component('my-component',{
+					template : '<div style="color: red;">一个自定义的组件！</div>',
+				}
+			);
+			
+			var example = new Vue({
+				el : '#example',
+			});
+			
+		
+			// 2,局部注册，只能在这个父级里面使用
+			var example2 = new Vue({
+				el : '#example2',
+				components : {
+					'my-component2' : {
+						template : '<h3>这也是一个自定义组件！</h3>'
+					},
+				}
+			});
+			
+			
+			// 3, 构造组件时，data必须为一个函数  返回一个obj
+			//4, 组件构造 必须在vue实例之前，否则这个组件无法在父级显示
+			Vue.component('my-component3',{
+				template : '<button @click="counter++">{{counter}}</button>',
+				data : function(){
+					return { counter : 0 }
+				}
+			});
+			
+			var example3 = new Vue({
+				el : '#example3',
+			});
+			
+			// 5 局部注册的组件 外层的data 和 组件里面的data是不相同的，无法互相访问
+			var example4 = new Vue({
+				el : '#example4',
+				data : {
+					message : '组件外的消息'
+				},
+				components : {
+					'my-component4' :{
+						template : '<h3>{{message}}</h3>',
+						data : function(){
+							return { 
+								message : '组件内的消息'
+							};
+						}
+					}
+				},
+			});
+			
+			
+			
+			var example5 = new Vue({
+				el : "#example5",
+			});
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+		
+	</head>
+	<body>
+		
+		<div id="example">
+			<!-- 1, v-model 
+			一个标签使用了 v-model 默认实现了下面的行为
+				v-model ="a"
+				1， :value = "a"
+				2,  @input = "(newValue)=> value=newValue"
+				3， 属性的一些默认属性被传递下去 如 checked="checked"
+			因为默认实现了input事件，子组件的 this.$emit("'input'");
+			才会促使父级的value改变
+			-->
+			<currency-input v-model="price"></currency-input>
+			
+			<!--2，分离v-model 中的value,实际中value会用做其他作用
+				组件内可以通过 model释放value
+			-->
+			<my-checkbox :value="value" v-model='checked'></my-checkbox>
+		</div>
+		
+		<script>
+			
+			Vue.component('currency-input',{
+				template : `<span>$
+								<input ref="input" :value="value" @input="updateValue($event.target.value)"/>
+							</span>`,
+				props: {
+					value : {
+						typ
+						: Number,
+						requiered : true,
+					}
+				},
+				methods: {
+					// 不是直接更新值，而是使用此方法来对输入值进行格式化和位数限制
+					updateValue: function (value) {
+						// slice作用保留 2 位小数
+						var formattedValue = value.trim().slice( 0,value.indexOf('.') === -1 ? value.length : value.indexOf('.') + 3);
+						// 如果值尚不合规，则手动覆盖为合规的值
+						if (formattedValue !== value) {
+					    	this.$refs.input.value = formattedValue
+					   }
+						 // 通过 input 事件带出数值
+      					this.$emit('input', Number(formattedValue))
+					}
+				},
+			});
+			
+			Vue.component('my-checkbox',{
+				model: {
+					/* v-model 关注 checked 属性，和change事件 */
+				    event: 'change', 
+				    prop: 'checked',
+				},
+				props: {
+					/*父级可以传递过来的属性 */
+					checked : String,
+				    value: String
+				},
+				/* 如果需要给标签添加属性 用v-bind  */
+				template : '<input type="checkbox" :value="value" :checked="checked"/>',
+			});
+			
+			var  example = new Vue({
+				el : '#example',
+				data :{
+					price :0,
+					value : '123',
+					checked : 'checked'
+				}
+			});
+		</script>
+	</body>
+</html>

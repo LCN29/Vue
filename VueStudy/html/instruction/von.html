@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		
+		<div id="von">
+			<!--格式 ：v-on:事件= '函数' -->
+			<p v-on:click='doSomething'>点击事件</p>
+			<!-- 简写 @事件-->
+			<p @click='doSomething'>v-on:简写@</p>
+			<!-- 对象写法 -->
+			<p v-on="{mousedown:doThis,mouseup:doThat}">对象写法</p>
+			<!-- 内联语句 -->
+			<p v-on:click="argFunction('hello')">点击事件</p>
+			<!--
+				修饰符 可以接在后面 起到功能加强的功能
+				.stop - 调用 event.stopPropagation(); 停止冒泡
+				.prevent - 调用 event.preventDefault(); 阻止默认行为
+				
+				
+				.capture - 添加事件侦听器时使用 capture 模式
+				给元素添加一个监听器	当元素发生冒泡时，先触发带有该修饰符的元素
+				多个时都有这个修饰符时由外而内触发，有capture的都执行完时，在
+				冒泡剩余的 ，详情看 capture.html
+				
+				
+				.self - 只当事件是从侦听器绑定的元素本身触发时才触发回调
+				可以理解为 经过本身的冒泡事件和捕获事件都跳过
+				只有直接作用在该元素上的事件才可以执行，详情看 self.html
+				
+				.native - 监听组件根元素的原生事件
+				给一个vue组件绑定事件时候，要加上native
+				如果是普通的html元素！就不需要
+				如 <router-link @click="show"/> 不会触发
+					<router-link @click.native="show"/> 触发
+				
+				.{keyCode | keyAlias} - 只当事件是从特定键触发时才触发回调
+				.once - 只触发一次回调。
+				.left - (2.2.0) 只当点击鼠标左键时触发。
+				.right - (2.2.0) 只当点击鼠标右键时触发。
+				.middle - (2.2.0) 只当点击鼠标中键时触发。
+				
+				
+				.passive - (2.3.0) 以 { passive: true } 模式添加侦听器   ？？不懂
+			-->
+			
+			<!--
+				使用修饰符时，顺序很重要；相应的代码会以同样的顺序产生。
+				因此，用 @click.prevent.self 会阻止所有的点击，
+				而 @click.self.prevent 只会阻止元素上的点击。
+			-->
+			
+			<p v-on:click.once="doSomething" >事件只触发一次</p>
+			<p v-on:click.prevent="id++" >事件里面也可以直接为代码 {{id}}</p>
+			<p v-on:click="argFunction($event)">如果函数的参数有一个为event,实参为$event</p>
+			
+			<!-- 键修饰符，键别名 -->
+			<input @keyup.enter="onEnter">
+			
+			<!--
+				常用按键名 
+				.enter
+				.tab
+				.delete (捕获“删除”和“退格”键)
+				.esc
+				.space
+				.up
+				.down
+				.left
+				.right
+				
+				同样的可以 通过全局变量 自定义按键别名
+				Vue.config.keyCodes.f1 = 112
+			-->
+			
+			
+			<!--
+				系统修饰键
+				.ctrl
+				.alt
+				.shift
+				.meta  //在不同系统有不同的对应 如 Mac命令键 (⌘) windows 徽标键 (⊞)
+			-->
+			<!-- 按下 ctrl键 和 点击触发 -->
+			<p type="button"  @click.ctrl="doSomething">按钮</p>
+			
+			<!--
+				.exact 配合系统修饰键 使用 精确到这个键位
+				@click.ctrl 只要按键时有ctrl就能触发 同时按钮shift+ctrl
+				都能触发
+				
+				加 上.exact 则按键只有ctrl才会触发
+			-->
+			
+			<p type="button"  @click.ctrl.exact="doSomething">精确按钮</p>
+		</div>
+		
+		<script>
+			
+			var von = new Vue({
+				el : '#von',
+				data : {
+					message : '消息',
+					id : 13
+				},
+				methods : {
+					doSomething(){
+						alert('点击事件');
+					},
+					doThis(){
+						console.log('做这个');
+					},
+					doThat(){
+						console.log('做那个');
+					},
+					argFunction(args){
+						console.log(args);
+					},
+					eventFunction(e){
+						alert('收到了');
+					},
+					onEnter(){
+						alert('提交');
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

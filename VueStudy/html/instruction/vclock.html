@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+		<style>
+			[v-cloak]{
+            	display:none;
+        	}
+		</style>
+	
+	</head>
+	<body>
+		
+		<!-- 这个指令保持在元素上直到关联实例结束编译 -->
+		<!-- 简单说，就是防止页面未加载完成时，显示双大括号标签 -->
+		<!--
+			有时在页面加载中 会出现 {{message}}这种数据还没加载出来
+			直接显示 大括号的情况，
+			加上v-cloak 配合 display : none 可以避免这种情况
+		-->
+		
+		<div id="vcloak">
+			<p v-cloak>{{message}}</p>
+		</div>
+		
+		<script>
+			
+			var vcloak = new Vue({
+				el : '#vcloak',
+				data : {
+					message : '12323123',
+				}
+			});
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		
+		<div id="velseif">
+			<div v-if=" type ==='A' ">
+				A
+			</div>
+			
+			<div v-else-if= " type ==='B'  ">
+				B
+			</div>
+			<div v-else-if= " type ==='C'  ">
+				C
+			</div>
+			<div v-else>
+				ABC
+			</div>
+			
+			<!-- 多条件判断 if else if  else -->
+		</div>
+		
+		<script>
+			
+			var velseif = new Vue({
+				el : '#velseif',
+				data : {
+					type : 'A'
+				}
+			});
+			
+		</script>
+	</body>
+</html>

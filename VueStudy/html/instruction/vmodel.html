@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		
+		<div id="vmodel">
+			<!-- v-model 主要用于表单 -->
+			
+							<!-- v-model 会忽略所有表单元素的 value、checked、selected 特性的初始值。-->
+			<div>
+				<h3>文本</h3>
+				<input placeholder="请编辑我" v-model="message" value="值"/>
+				<p>您输入了: {{message}}</p>
+			</div>
+			
+			<div>
+				<h3>多行文本</h3>
+				<p style="white-space: pre-line;">{{ text }}</p>
+				<br>
+				<textarea v-model="text" placeholder="多行消息"></textarea>
+			</div>
+			
+			<div>
+				<h3>复选框</h3>
+				<input type='checkbox' id="checkbox" v-model="checked"/>
+				<label for="checkbox">{{ checked }}</label>
+				
+				<!-- 如果data 里面的model 有数据，会默认选中这一个 -->
+				<h5>多个勾选框，绑定到同一个数组</h5>
+				<input type="checkbox" id="book" value="读书" v-model="interest">
+				<label for="book">读书</label>
+				<input type="checkbox" id="swim" value="游泳" v-model="interest">
+				<label for="swim">游泳</label>
+				<input type="checkbox" id="game" value="游戏" v-model="interest">
+				<label for="game">游戏</label>
+			</div>
+			
+			<div>
+				<h3>单选按钮</h3>
+				<input type="radio" id="book" value="读书" v-model="picked">
+				<label for="book">读书</label>
+				<input type="radio" id="swim" value="游泳" v-model="picked">
+				<label for="swim">游泳</label>
+				<br/>
+				<span>选择了: {{ picked }}</span>
+			</div>
+			
+			<div>
+				<h3>单选列表</h3>
+				<select v-model="selected">
+					<option disabled value="">请选择</option>
+					<option>A</option>
+				    <option>B</option>
+				    <option>C</option>
+				</select>
+				<span>您选择了: {{ selected }}</span>
+				
+				
+				<h5>多选列表</h5>
+				<select v-model="selectedArr" multiple style="width: 50px;">
+					<option>A</option>
+				    <option>B</option>
+				    <option>C</option>
+				</select>
+				<br>
+  				<span>选择了: {{ selectedArr }}</span>
+  				
+  				<h5>动态列表</h5>
+  				<select v-model="selectedOption">
+  					 <option v-for="option in options" v-bind:value="option.value">
+  					 	{{ option.text }}
+  					 </option>
+  				</select>
+  				<span>选择了: {{ selectedOption }}</span>
+			</div>
+			
+			<div>
+				<h3>修饰符</h3>
+				<!-- 自动将用户的输入值转为 Number 类型 (如果原值的转换结果为 NaN 则返回原值) -->
+				<input type="text" placeholder="请输入数字" v-model.num='num'/>
+				
+				<!-- 正常 input事件中同步输入框的值与数据 有了lazy会在在 change 事件中同步-->
+				<input type="text" placeholder="请输入内容" v-model.lazy='msg' />
+				<span> {{msg}} </span>
+				
+				<!-- trim 自动过滤用户输入的首尾空格-->
+				<input type="text" placeholder="请输入内容" v-model.trim='msgs' />
+				<span> {{msgs}} </span>
+			</div>
+			
+			<div>
+				<h3>值绑定</h3>
+				<!-- 将 input 里面的value值绑定为data里面的一个值，用v-bind
+					如下面 我们想将 input的value绑定为 data里面的a，
+					用了v-bind 就行了 
+					此时   vm.toggle === vm.a 为true 2者相等
+					用处 可以让一些选项默认选中等
+				-->
+				<input
+				  type="checkbox"
+				  v-model="toggle"
+				  v-bind:value= 'a'
+				>
+				
+				<!-- 同时value的值可以不再是字符串 -->
+				<!--
+					typeof vmodel.select === object
+					vmodel.select.number == 123
+				-->
+				<select v-model="select">
+					<option v-bind:value="{number:123}">123</option>
+				</select>
+				
+			</div>
+			
+		</div>
+		
+		<script>
+			
+			var vmodel = new Vue({
+				el : '#vmodel',
+				data : {
+					message : '',
+					text : '',
+					checked : true,
+					interest : [],
+					picked: '',
+					selected : '',
+					selectedArr : [],
+					options :[
+						{ text: 'One', value: 'A' },
+					    { text: 'Two', value: 'B' },
+					    { text: 'Three', value: 'C' }
+					],
+					selectedOption : 'A',
+					num : 1,
+					msg : '',
+					msgs : '',
+					
+					toggle : '',
+					a : '1',
+					b : '2',
+					
+					
+					select : {},
+				}
+			});
+			
+			
+			
+		</script>
+	</body>
+</html>

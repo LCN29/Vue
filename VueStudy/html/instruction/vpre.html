@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		
+		<div id="vpre">
+			
+			<!-- 
+				跳过这个元素和它的子元素的编译过程。
+				可以用来显示原始 Mustache 标签。跳过大量
+				没有指令的节点会加快编译。
+				
+				{{ **** }}Mustache 标签
+			-->
+			<!-- 
+				如果页面需要显示 {{数据}} 直接{{数据}} 会报错 不显示
+				有v-pre 表示直接已字符串渲染 ，不会报错
+			-->
+			<span>{{aaaaa}}</span>
+			<span v-pre>{{aaaaa}}</span>
+		</div>
+		
+		<script>
+			
+			var vpre = new Vue({
+				el : '#vpre',
+				data : {
+					message : '',
+				}
+			});
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+		<style>
+			.test {
+				color:#00F;
+			}
+		</style>
+	</head>
+	<body>
+		
+		
+		<div id="vhtml">
+			<div>{{html}}</div>
+			<div v-html="html"></div>
+			
+			<!--
+				如 1 ： 如果 data 里面的数据为 html格式的，然后又想让他以html显示
+				用 1的方式是以 string 格式显示
+				需要用2的方式 既 v-html = 'key值'
+			-->
+		</div>
+		
+		<script>
+			var vhtml = new Vue({
+				el : '#vhtml',
+				data : {
+					html : `<p class='test'>html</p>`,
+				}
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		
+		<div id="velse">
+			<div v-if="Math.random() > 0.5">
+			  	看到见
+			</div>
+			<div v-else>
+			  	看不见
+			</div>
+			
+			<div v-if='show'>看的见</div>
+			<div v-else>看不见</div>
+			
+		<!--
+			v-else 必须搭配 v-if 或者 v-if v-else-if 使用
+			v-else='布尔值' true 显示标签 false 该标签不显示 
+			同 v-if 一样 不显示的不会被渲染
+		-->
+			
+		</div>
+		
+		<script>
+			
+			var velse = new Vue({
+				el : '#velse',
+				data : {
+					show : true,
+				}
+			});
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+
+		<div id="example" >
+			<!-- 1,从dom中可以知道 <my-slot>包住的内容没有显示出来
+				被组件包住的内容，绑定到父组件的数据，但是是不会显
+				示的
+			-->
+			<div style="background: #FFC0CB;">
+				 <h1>我是父组件的标题</h1>
+				 <my-slot1>
+				 	<p>这是一些初始内容</p>
+				    {{message}}
+				 </my-slot1>
+			</div>
+			
+			
+			<!--2，为了让组件包住的内容可以显示出来==》slot-->
+			
+			
+			<!--3，单个插槽
+				子组件模板有一个 没有任何属性的<slot>标签
+				父组件传入的整个内容片段将插入到插槽所在的 DOM
+				位置，并替换掉插槽标签本身。	
+			-->
+			
+			<div style="background:#FF69B4">
+				<h1>我是父组件的标题</h1>
+				<my-slot2>
+					<p>这是一些初始内容</p>
+				    <p>这是更多的初始内容</p>
+				</my-slot2>
+			</div>
+			
+			<!--4,当父级没有内容块时，子组件有插槽时，
+				正常显示插槽内容
+			-->
+			<div style="background:#FFFF00">
+			  	<h1>我是父组件的标题</h1>
+			  	<my-slot2></my-slot2>
+			</div>
+			
+			<!--5,具名插槽
+				当子组件的 slot标签有了一个name属性，
+				则父级可以通过 slot='对应的name'选择插入
+				的插槽	
+			-->
+			<div style="background: #eafade;" >
+				<my-slot3>
+					<!-- 指定了插入子控件的 header 插槽 -->
+					<h1 slot="header">这里可能是一个页面标题</h1>
+					<!--
+						没有指定插槽 插入没有name属性的插槽
+						当子控件里面的插槽都是有名字的，也就是
+						没有没有属性的插槽，此段不渲染
+					-->
+					<p>主要内容的一个段落。</p>
+  					<p>另一个主要段落。</p>
+  					<!-- 当指定的插槽在子组件不存在，此段不显示 -->
+  					<p slot="footerer">不存在的插槽</p>
+				</my-slot3>
+			</div>
+			
+			<!-- 6，作用插槽 
+				子控件有一个没有name的插槽   但是有其他属性的存在
+				这些属性可以传给父级
+				首先 ：在子组件里面有一个<template>
+				其次 : template 有一个 slot-scope="属性名"的属性
+				最后 : template 可以通过 属性名.slot的属性名 获取到值
+				注 : 在template 外面的内容不会显示
+			-->
+			<div style="background: #daafed;">
+				<h1>父标题</h1>
+				<my-slot4>
+					<span>没有在template的内容</span>
+					<template slot-scope="props">
+						<span>来自子组件的内容</span>
+						<span>{{ props.text }}</span>
+						<span>{{ props.title }}</span>
+					</template>
+				</my-slot4>
+			</div>
+			
+			<!-- 7，在 2.5.0+，slot-scope 能被用在任意元素或组件中
+				而不再局限于 <template>，最常用与列表的渲染         
+			-->
+			
+			<div style="background: #eadfea;">
+				<my-list>
+					<li slot="item" slot-scope="props">
+				    	{{ props.text }}
+				 	</li>
+				</my-list>
+			</div>
+			
+		</div>
+		
+		<script>
+			
+			/*======================================*/
+			Vue.component('my-slot1',{
+				template : `<div>
+								<h2>我是子组件的标题</h2>
+							</div>`,
+			});
+			
+			
+			/*======================================*/
+			Vue.component('my-slot2',{
+				template : `<div>
+								<h2>我是子组件的标题</h2>
+								<slot>
+									只有在没有要分发的内容时才会显示。
+								</slot>
+							</div>`,
+			});
+			
+			/*=====================================*/
+			Vue.component('my-slot3',{
+				template : `<div>
+							  <header>
+							    <slot name="header">头部</slot>
+							  </header>
+							  
+							  <main>
+							    <slot></slot>
+							  </main>
+							  
+							  <footer>
+							    <slot name="footer">尾部</slot>
+							  </footer>
+							</div>`,
+			});
+			
+			/*==========================================*/
+			Vue.component('my-slot4',{
+				template : `<div>
+							  <h2>我是子组件的标题</h2>
+							  <slot text="来自子组件的文本" title="标题"></slot>
+							</div>`,
+			});
+			
+			/*==========================================*/
+			
+			Vue.component('my-list',{
+				template : `<ul>
+							  <slot name='item' 
+							  	v-for='item in items'
+							  	:text="item.text"> 1234
+							  </slot>
+							</ul>`,
+				data : function(){
+					return {
+						items : [
+							{id : 1, text : 'text1'},
+							{id : 2, text : 'text2'},
+							{id : 3, text : 'text3'}
+						]
+					};
+				}
+			});
+			
+			
+			var exaxmple = new Vue({
+				el :"#example",
+				data : {
+					message : '消息'
+				},
+			});
+		</script>
+		
+	</body>
+</html>
+

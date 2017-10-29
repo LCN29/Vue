@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		
+		<div id='vshow'>
+			<p v-show='show'>显示内容</p>
+			<p v-show='!show'>不显示内容</p>
+			
+			<!--
+				 v-show = false
+				 将标签渲染出来，然后给他添加上 display:none 隐藏起来
+				 
+				 v-show = true
+				 渲染标签，显示
+			-->
+			
+		</div>
+		
+		<script>
+			
+			var vshow = new Vue({
+				el : '#vshow',
+				data : {
+					show : true,
+				}
+			});
+			
+		</script>
+	</body>
+</html>

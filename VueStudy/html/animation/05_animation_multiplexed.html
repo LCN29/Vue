@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		<script>
+			
+		  /*
+			过渡可以通过 Vue 的组件系统实现复用。要创建一个可复用过渡组件，你需要做的就是将 <transition> 
+			或者 <transition-group> 作为根组件，然后将任何子组件放置在其中就可以了。
+		  */
+			Vue.component('my-special-transition', {
+			  template: '\
+			    <transition\
+			      name="very-special-transition"\
+			      mode="out-in"\
+			      v-on:before-enter="beforeEnter"\
+			      v-on:after-enter="afterEnter"\
+			    >\
+			      <slot></slot>\
+			    </transition>\
+			  ',
+			  methods: {
+			    beforeEnter: function (el) {
+			      // ...
+			    },
+			    afterEnter: function (el) {
+			      // ...
+			    }
+			  }
+			});
+			
+			// 官方推荐 通过 render函数
+			Vue.component('my-special-transition', {
+			  	functional: true,
+			  	render: function (createElement, context) {
+			    	var data = {
+				      	props: {
+				        	name: 'very-special-transition',
+				        	mode: 'out-in'
+				      	},
+				      	on: {
+				        	beforeEnter: function (el) {
+				         	 // ...
+				        	},
+				        	afterEnter: function (el) {
+				         	// ...
+				        	}
+			      		}
+			    	};
+			    	return createElement('transition', data, context.children);
+			  	}
+			});
+	</body>
+</html>

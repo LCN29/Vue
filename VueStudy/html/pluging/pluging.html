@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		
+		<div id="example" >
+			<button @click="Use" >按钮</button>
+		</div>
+		
+		<script>
+			
+			/*
+			 	插件通常会为 Vue 添加全局功能
+			 	1,添加全局方法或者属性
+			 	2,添加全局资源
+			 	3,通过全局 mixin 方法添加一些组件选项
+			 	4,添加 Vue 实例方法，通过把它们添加到 Vue.prototype 上实现。
+			 	5,一个库，提供自己的 API，同时提供上面提到的一个或多个功能，如 vue-router
+			 	
+			 * */
+			
+			/* 参数2 Object 可选，用于传递参数 */
+			MyPlugin.install = function (Vue, options) {
+				// 1. 添加全局方法或属性
+				  Vue.myGlobalMethod = function () {
+				    // 逻辑...
+				    console.log('全局方法');
+				  },
+				  
+				  // 2. 添加全局资源
+				  Vue.directive('my-directive', {
+				    bind (el, binding, vnode, oldVnode) {
+				      // 逻辑...
+				    }
+				    //...
+				  });
+				  
+				  // 3. 注入组件
+				  Vue.mixin({
+				    created: function () {
+				      // 逻辑...
+				    }
+				   // ...
+				  });
+				  
+				  // 4. 添加实例方法
+				  Vue.prototype.$myMethod = function (methodOptions) {
+				    // 逻辑...
+				  }
+			};
+			
+			
+			var example = new Vue({
+				el : '#example',
+				methods : {
+					Use(){
+						//插件的使用 ，貌似是通过 import导入的，此处找不到
+						//MyPlugin
+						Vue.use(MyPlugin);
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

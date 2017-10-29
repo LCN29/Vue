@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+		<link href="https://cdn.jsdelivr.net/npm/animate.css@3.5.1" rel="stylesheet" type="text/css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js"></script>
+		<style>
+			/*==================================*/
+			/* 进入设置 */
+			.fade-enter {
+				opacity: 0;
+			}
+			.fade-enter-active {
+				transition : opacity .9s;
+			}
+			.fade-enter-to {
+				opacity: 0.5;
+			}
+			
+			/* 离开设置 */
+			.fade-leave {
+				opacity: 0.5;
+			}
+			.fade-leave-active {
+				transition: opacity .9s;
+			}
+			.fade-leave-to {
+				opacity: 0;
+			}
+			
+			/*=========================================*/
+			.slide-fade-enter-active {
+			  transition: all .3s ease;
+			}
+			.slide-fade-leave-active {
+			  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+			}
+			.slide-fade-enter, .slide-fade-leave-to{
+				transform: translateX(10px);
+  				opacity: 0;
+			}
+			
+			/*=====================================*/
+			.bounce-enter-active {
+			  animation: bounce-in .5s;
+			}
+			.bounce-leave-active {
+			  animation: bounce-in .5s reverse;
+			}
+			@keyframes bounce-in {
+				0% {
+					transform: scale(0);
+				}
+				50% {
+					transform: scale(1.5);
+				}
+				100% {
+					transform: scale(1);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		
+		<!--
+			1，需要动画的地方 用一个 transiton包起来 
+			name属性不是必须的，不用name，默认使用v 正常推荐给个name,
+			否则动画多时，一个v不够用 （声明css时 v-enter,v-enter-to ）
+		-->
+		<div id="example1">
+			<!--
+				2，动画开始
+				.fade-enter(进入的第一帧)=>.fade-enter-active(过渡时出现)=>
+				.fade-enter-to(过渡最后一帧)
+				leave 同理
+			-->
+			<!--3
+				上面之所以设置了enter-to leave-of 既最后一帧为0.5时，却显示的时1
+				是因为 这个过渡只是一个过程，最终标签的样式不受他们影响的，本身有什么
+				样式，就是什么样式 如p的透明度默认时1，过渡动画到了0.5，这时过渡完了
+				相关的动画类被移除，p应该是什么样就什么样，此时p为1，不是0.5
+				所以 XX-enter-to XX-leave 可以不用设置，此时 会使用标签的默认属性
+			-->
+			<button @click="show=!show" >切换</button>
+			<transition name="fade" >
+				<p v-if="show" >动画区</p>
+			</transition>
+		</div>
+		
+		<div id="example2">
+			<button @click="show=!show" >切换</button>
+			<transition name="slide-fade" >
+				<p v-if="show" >影视区</p>
+			</transition>
+		</div>
+		
+		<div id="example3">
+			<!--
+				4引用第三方类库 可以将对应的动画css 放到对应的 标签的对应属性中
+				使用 在上面的6个class,不需要前缀 后面添加-class,
+				属性值为对应的css class类
+			-->
+			<button @click="show=!show" >切换</button>
+			<transition 
+				name="custom-classes-transition"
+				enter-active-class="animated tada"
+    			leave-active-class="animated bounceOutRight" >
+				<p v-if="show" >科技区</p>
+			</transition>
+		</div>
+		
+		
+		<div id="example4">
+			<!-- 5，上面是过场   这里是动画（最终还是会回到一开始的样式） -->
+			<button @click="show=!show" >切换</button>
+			<transition name="bounce">
+				<p v-if="show" >音乐区</p>
+			</transition>
+		</div>
+		
+		<div id="example5">
+			<!--6，无论时过渡 还是动画 都可以有一个duration的属性 
+				作用，具体说明动画的持续时间 duration="1000" 说明这个动画时间会持续1s
+				如果css中设置的动画时间少于1s,则运动完后，标签会回到原来的位置
+				等到时间到了 才执行 v-show
+			
+				duration="{ enter: 500, leave: 800 } 进入的时间，出去的时间
+			-->
+			<button @click="show=!show" >切换</button>
+			<transition name="bounce"  :duration="{ enter: 500, leave: 800 }">
+				<p v-if="show" >舞蹈区</p>
+			</transition>
+		</div>
+		
+		<div id="example6">
+			<!--
+				7，动画钩子函数对于仅使用 JavaScript 过渡的元素添加 v-bind:css="false"
+				这也可以避免过渡过程中 CSS 的影响
+			-->
+				<button @click="show=!show" >切换</button>
+				<transition
+					v-on:before-enter="beforeEnter"
+				    v-on:enter="enter"
+				    v-on:after-enter="afterEnter"	
+				    v-on:enter-cancelled="enterCancelled"
+				    
+					v-on:before-leave="beforeLeave"
+					v-on:leave="leave"
+					v-on:after-leave="afterLeave"
+					v-on:leave-cancelled="leaveCancelled"
+
+				    v-bind:css="false"
+				    
+				>
+					<p v-if="show" >鬼畜区</p>
+				</transition>
+			</div>
+			
+			<div id="example7">
+				<!--,8，apper 第一次渲染的时候才会起作用 也就是给他
+					加上一个第一次出现的动画，后面再出现都是没动画的
+					同样的也有钩子函数
+					v-on:before-appear=""
+				    v-on:appear=""
+				    v-on:after-appear=""
+				    v-on:appear-cancelled=""
+				-->
+				<button @click="show=!show" >切换</button>
+				<transition 
+					appear
+					appear-class="fade-enter"
+					appear-to-class="fade-enter-to"
+  					appear-active-class="fade-enter-active">
+					<p v-if="show" >广告区</p>
+				</transition>
+			</div>
+		
+		
+		
+		<script type="text/javascript">
+			/*=================================*/
+			var example1 = new Vue({
+				el : '#example1',
+				data : {
+					show : true,
+				}
+			});
+			
+			/*=================================*/
+			var example2 = new Vue({
+				el : '#example2',
+				data : {
+					show : true,
+				}
+			});
+			
+			
+			/*==================================*/
+			var example3 = new Vue({
+				el : '#example3',
+				data : {
+					show : true,
+				}
+			});
+			
+			/*==================================*/
+			var example4 = new Vue({
+				el : '#example4',
+				data : {
+					show : true,
+				}
+			});
+			/*=================================*/
+			var example5 = new Vue({
+				el : '#example5',
+				data : {
+					show : true,
+				}
+			});
+			
+			/*======================================*/
+			var example6 = new Vue({
+				el : '#example6',
+				data : {
+					show : true,
+				},
+				methods: {
+					
+				  	// 进入时
+				  	beforeEnter: function (el) {
+				  	    el.style.opacity = 0
+        				el.style.transformOrigin = 'left'
+				 	},
+				 	// 只通过js进行动画时 done是必须的 
+				 	// 与 CSS 结合时使用
+				 	enter: function (el, done) {
+				 	    Velocity(el, { opacity: 1, fontSize: '1.4em' }, { duration: 300 })
+      					Velocity(el, { fontSize: '1em' }, { complete: done })
+				  	},
+				  	afterEnter: function (el) {},
+				  	enterCancelled: function (el) {},
+
+
+				 	// 离开时
+				    beforeLeave: function (el) {},
+				  	
+					//和enter一样
+				  	leave: function (el, done) {
+				    	Velocity(el, { translateX: '15px', rotateZ: '50deg' }, { duration: 600 })
+				        Velocity(el, { rotateZ: '100deg' }, { loop: 2 })
+				        	Velocity(el, {
+				        	rotateZ: '45deg',
+				        	translateY: '30px',
+				        	translateX: '30px',
+				        	opacity: 0
+				        }, { complete: done });
+				  	},
+				 	
+				  	afterLeave: function (el) {},
+				  	//leaveCancelled 只用于 v-show 中
+				  	leaveCancelled: function (el) {}
+				}
+			});
+			/*==========================================*/
+			var example7 = new Vue({
+				el : '#example7',
+				data : {
+					show : true,
+				}
+			});
+		</script>
+	</body>
+</html>

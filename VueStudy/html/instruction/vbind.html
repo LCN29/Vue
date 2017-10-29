@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+		<style>
+			.small {
+				height : 10px;
+			}
+			.big {
+				height : 100px;
+			}
+			.red {
+				background: red;
+			}
+			.yellow {
+				background: yellow;
+			}
+			.middle {
+				height : 50px;
+			}
+		</style>
+	</head>
+	<body>
+		
+		<div id="vbind">
+			
+			<div>
+				<img src="../../img/grade.png" />
+				<!-- v-bind 将冒号后面的属性和对应的数据绑定，生成 属性="值"的形式 -->
+				<img v-bind:src='src' />
+				<!-- 简写-->
+				<img :src='src' />
+				
+				<!-- 支持字符串拼接 -->
+				<img :src=" '../../img/'+name "/>
+				
+				<!-- 一次绑定多个属性 -->
+				<img :src='src' v-bind="{id : 'img','class' : 'red'}" />
+			</div>
+
+			<!-- v-bind 常用于 动态的切换 style class -->
+			<div>
+				
+				<!-- :class= "{ 
+					
+								想要显示的class : 
+								布尔值(true,给这个标签添加上这个class,false,则不添加) 
+							}"  
+				-->
+				<img :src='src' :class="{ big : show}"/>
+				
+				<!--  如果已经存在这个属性，则直接在其后面追加 -->
+				<img :src='src' :class="{ big : show}"  class='small'/>
+				
+				<!-- 多个 -->
+				<img :src='src' :class="{ big : show, red : !noShow}"/>
+				
+				<!-- 数据的绑定也可以在模板内定义好 -->
+				<img :src='src' :class="classObj"/>
+				
+				<img :src="src" :class="['small','red']"  />
+				
+				<!-- 如果绑定的是一个数组，则直接将数组内的值直接渲染 -->
+				<img :src='src' :class="classArr" />
+				
+				
+				
+				<!-- 数组里面可以嵌套三元表达式 -->
+				<img :src='src' :class="[ !show ? 'big' : 'small' , 'red']" />
+				
+				<!-- 数组里面也可以嵌套 判断对象 -->
+				<img :src='src' :class="[{middle: show}, 'yellow ']" />
+			</div>
+			
+			<div>
+				<!-- 直接绑定属性， 需要驼峰式 -->
+				<p :style="{ color : 'yellow', fontSize : '40px'}" >绑定style </p>
+				
+				<!-- 调用数据 -->
+				<p :style="{ color : 'red', fontSize : fontSize}" >绑定style </p>
+				
+				<!-- 直接绑定一个对象 -->
+				<p :style="styleObj">绑定style</p>
+				
+				<!-- 直接绑定一个数组 -->
+				<p :style="[orangeStyle,tenFontSizeStyle]">绑定style</p>
+
+				<!--
+					数组顺序向下，直到需要支持的，所以最后一个放一个通用的最好
+				-->
+				<div :style="{ display : ['-webkit-box', '-ms-flexbox', 'flex'] }"></div>
+				
+				<!--  
+					css属性需要在前面添加浏览器前缀时 v-bind
+					vue.js 自动侦测并添加相应的前缀 使用时不需要加前缀
+					{ -web-transform : [ ] }
+					直接 { transform : []}
+				-->
+				
+				<!--
+					其本身还有3个修饰符，但是好像都是用于组件的，后面再说
+					.prop .camel .sync
+				-->
+			</div>
+			
+			
+		
+		</div>
+		
+		<script>
+			
+			var vbind = new Vue({
+				el : '#vbind',
+				data : {
+					src : '../../img/grade.png',
+					name : 'grade.png',
+					show : true,
+					noShow : false,
+					classObj : {
+						small : false,
+						red : true,
+					},
+					classArr : ['yellow','middle' ],
+					fontSize : '30px',
+					styleObj :{
+						fontSize : '20px',
+						color : 'green'
+					},
+					orangeStyle : {
+						color : 'orange'
+					},
+					tenFontSizeStyle : {
+						fontSize : '10px'
+					}
+				}
+			});
+			
+		</script>
+	</body>
+</html>

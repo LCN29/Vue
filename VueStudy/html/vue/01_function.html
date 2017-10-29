@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		
+		<div id="example" >
+			<!--1, Mustache标签里面可以有表达式  -->
+			<p>{{ judge ? '真的' : '假的' }}</p>
+			<!--2, 但是有时候 我们的 表达式可能会太长，不好维护-->
+			<p>{{ message.split(' ').reverse().join(' ') }}</p>
+			<!--3,
+				这时可以运用计算属性 computed
+				用处和data一样，知识能够跪数据处理后，在显示出来
+			-->
+			<p>经过计算属性计算的msg : {{ reversedMessage }}</p>
+			<!-- 4，computed 和 methods 里面的方法不要同名 -->
+			<p>通过自定义方法获取msg : {{ reversedMessage2() }}</p>
+			<!--5，computed 和 methods自定义方法 效果一样，
+				区别 :computed : 有缓存  自定义方法 ： 没有
+				computed ： 返回的值依赖于data,并且有缓存
+				当他的依赖data改变了，他才会重新计算值，
+				所以，只要依赖的data不改变，多次调用他 时，
+				内部是不会进行运算，而是直接返回缓存的值
+				如这个 第一次计算后就把当前的时间进行了缓存 （假设为 2:30）
+				computed: {
+				  now: function () {
+				    return Date.now()
+				  }
+				}
+				以后你再调用这个方法都只会返回这个值（2:30）？？
+				因为他没有依赖，执行一次后，结果缓存了，内部没依赖
+				没改变，值就不改变
+				
+				而自定义方法，调用一次就会进行一次计算，在返回结果
+				所以 当一个数据时需要大量计算的，建议用 computed
+				每次调用一定要返回新的值 请用 methods
+			-->
+			
+			<!--6,watch使用，监听data的变化-->
+			<input v-model.lazy="question" placeholder="提问的问题"> <br/>
+			<p>{{answer}}</p>
+			
+			<!--7,有时使用computed可以达到watch的效果-->
+			<p>{{message}}</p>
+			<p>侦听属性</p>
+			<!-- 当 question改变时，此处也会改变， -->
+			<p>{{listenerQuestion}}</p>
+			
+			<!--
+				8 正常 computed 默认 有 get方法，有时也可以添加set方法
+				调用 ：vue实例.对应的computed方法= '需要传递过去的参数';
+				如上 data 2个值 other another   computed : change
+				页面显示 {{change}} ==》 显示 other
+				点击事件 触发 attr.change = '参数';
+				触发了 change 里面的set方法
+				set方法 修改了 another 和 other 的值，
+				侧面修改了anohter
+			-->
+			<p>{{change}}</p>
+			<p>{{another}}</p>
+			<input type="button" value='改变一个的值' onclick="change();"/>
+		</div>
+		
+		
+		<script>
+			var example = new Vue({
+				el : '#example',
+				data :{
+					judge : true,
+					message : 'Hello world ！',
+					question : '',
+					answer : '盯--,问题呢？',
+					other : '一个',
+					another : '另一个',
+				},
+				computed :{
+					/* 此处不要用箭头函数，因为this不会是指向 attr了 */
+					reversedMessage : function(){
+						return this.message.split(' ').reverse().join(' ');
+					},
+					listenerQuestion : function(){
+						return this.question+'侦听到的';
+					},
+					change : {
+						
+						get : function(){
+							return this.other;
+						},
+						
+						set : function(newValue){
+							console.log(newValue);
+							this.another = '另外2个';
+							this.other = '第2个';
+						}
+					}
+				},
+				methods :{
+					reversedMessage2 : function(){
+						return this.message.split(' ').reverse().join(' ');
+					},
+					getAnswer : function(){
+						if (this.question.indexOf('?') === -1) {
+				          this.answer = '问题没有问号，不理你了'
+				          return;
+				        }
+						this.answer = '我也不知道，233';
+					},
+				},
+				watch : {
+					question: function (newQuestion) {
+						this.getAnswer();
+					}
+				}
+			});
+			
+			function change (){
+				// 此时会调用 change方法的set方法
+				example.change = '传递给set的参数';
+			}
+		</script>
+	</body>
+</html>

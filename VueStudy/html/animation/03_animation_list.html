@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.14.1/lodash.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js"></script>
+		<style>
+			.list-item {
+			  	display: inline-block;
+			  	margin-right: 10px;
+			}
+			.list-enter-active, .list-leave-active {
+			  	transition: all 1s;
+			}
+			.list-enter, .list-leave-to{
+			 	opacity: 0;
+			  	transform: translateY(30px);
+			}
+			
+			/*==========================*/
+			/* v-move 的css设置*/
+			.flip-list-move {
+			  	transition: transform 1s;
+			}
+			
+			
+			/*=====================================*/
+			.list-complete-item {
+			  	transition: all 1s;
+			  	display: inline-block;
+			  	margin-right: 10px;
+			}
+			.list-complete-enter, .list-complete-leave-to{
+			  	opacity: 0;
+			  	transform: translateY(30px);
+			}
+			.list-complete-leave-active {
+			  	position: absolute;
+			}
+		</style>
+	</head>
+	<body>
+		
+		<div id="example1" style="background: #FFFF00; margin-top: 10px;">
+			<button v-on:click="add">Add</button>
+  			<button v-on:click="remove">Remove</button>
+  			<!--
+  				1,列表动画用<transition-group>包起来
+  				transition-group 会以一个真实元素呈现：默认为一个 <span>
+  				可通过 tag设置想要的元素
+  				
+  				内部元素 总是需要 提供唯一的 key 属性值 这个key值需要为item中的某项
+  				用索引的index会出错
+  			-->
+  			<transition-group name="list" tag="p">
+  				<span v-for="item in items" v-bind:key="item" class="list-item">
+			      {{ item }}
+			    </span>
+  			</transiton-group>
+		</div>
+		
+		<div id="example2" style="background: #FFeafa; margin-top: 10px;">
+			<!--2，列表bug调整，添加和移除元素的时候，周围的元素会瞬间移动到他们
+				的新布局的位置，而不是平滑的过渡，
+				<transition-group>可以 通过v-move 改变定位
+				使用时 可以像enter/leave 在css中设置 注意前缀需和name一致
+				也可以通过move-class 属性手动设置。
+				
+				原理
+				内部的实现，Vue 使用了一个叫 FLIP 简单的动画队列
+				使用 transforms 将元素从之前的位置平滑过渡新的位置
+				
+				使用 FLIP 过渡的元素不能设置为 display: inline 。作为替代方案，
+				可以设置为 display: inline-block 或者放置于 flex 中
+			-->
+			<button v-on:click="shuffle">Shuffle</button>
+			<transition-group name="flip-list" tag="ul">
+				<li v-for="item in items" v-bind:key="item">
+			       {{ item }}
+			    </li>
+			</transition-group>
+		</div>
+		
+		
+		
+		<div id="example3" class="demo">
+			<!--3,修改列表bug -->
+		    <button @click="shuffle">Shuffle</button>
+		    <button @click="add">Add</button>
+		    <button @click="remove">Remove</button>
+		    <transition-group name="list-complete" tag="p">
+			    <span
+			      v-for="item in items"
+			      :key="item"
+			      class="list-complete-item"
+			    >
+		      		{{ item }}
+		        </span>
+		  </transition-group>
+		</div>
+		
+		
+		<!-- 4，列表交错过渡 -->
+		<div id="example4">
+			<input v-model="query">
+			<transition-group
+			    name="staggered-fade"
+			    tag="ul"
+			    v-bind:css="false"
+			    v-on:before-enter="beforeEnter"
+			    v-on:enter="enter"
+			    v-on:leave="leave"
+			>
+				<li
+			      v-for="(item, index) in computedList"
+			      v-bind:key="item.msg"
+			      v-bind:data-index="index"
+			    >{{ item.msg }}</li>
+			</transition-group>
+		</div>
+		
+		
+		
+		
+		<script>
+			var example1 = new Vue({
+				el : '#example1',
+				data : {
+					items: [1,2,3,4,5,6,7,8,9],
+    				nextNum: 10,
+				},
+				methods : {
+					randomIndex(){
+						return Math.floor(Math.random() * this.items.length);
+					},
+					add(){
+						this.items.splice(this.randomIndex(), 0, this.nextNum++);
+					},
+					remove(){
+						this.items.splice(this.randomIndex(), 1);
+					}
+				}
+			});
+			
+			/*==============================================*/
+			var example2 = new Vue({
+				el : '#example2',
+				data : {
+					items: [1,2,3,4,5,6,7,8,9]
+				},
+				methods : {
+					shuffle: function () {
+				        this.items = _.shuffle(this.items)
+				    }
+				}
+			});
+			
+			/*====================================================*/
+			var example3 = new Vue({
+				el: '#example3',
+				data: {
+				    items: [1,2,3,4,5,6,7,8,9],
+				    nextNum: 10
+				},
+				methods: {
+				    randomIndex: function () {
+				      return Math.floor(Math.random() * this.items.length)
+				    },
+				    add: function () {
+				      this.items.splice(this.randomIndex(), 0, this.nextNum++)
+				    },
+				    remove: function () {
+				      this.items.splice(this.randomIndex(), 1)
+				    },
+				    shuffle: function () {
+				      this.items = _.shuffle(this.items)
+				    }
+				}
+			});
+			
+			/*===============================================*/
+			
+			var example4 = new Vue({
+				el : '#example4',
+				data : {
+					query: '',
+					list: [ 
+						{ msg: 'Bruce Lee' },
+					    { msg: 'Jackie Chan' },
+					    { msg: 'Chuck Norris' },
+					    { msg: 'Jet Li' },
+					    { msg: 'Kung Fury' }
+					],
+				},
+				computed: {
+    				computedList: function () {
+    					var vm = this
+					    return this.list.filter(function (item) {
+					    	return item.msg.toLowerCase().indexOf(vm.query.toLowerCase()) !== -1
+					    });
+    				}
+    			},
+    			methods: {
+    				beforeEnter: function (el) {
+				        el.style.opacity = 0
+				        el.style.height = 0
+				    },
+				    enter: function (el, done) {
+				      	var delay = el.dataset.index * 150
+				      	setTimeout(function () {
+				        	Velocity(
+				          		el,
+				          		{ opacity: 1, height: '1.6em' },
+				          		{ complete: done }
+				        	)
+				      	}, delay)
+				    },
+				    leave: function (el, done) {
+				      	var delay = el.dataset.index * 150
+				      	setTimeout(function () {
+				        	Velocity(
+				          		el,
+				          		{ opacity: 0, height: 0 },
+				          		{ complete: done }
+				        	)
+				      	}, delay)
+				    }
+    			}
+			});
+		</script>
+	</body>
+</html>

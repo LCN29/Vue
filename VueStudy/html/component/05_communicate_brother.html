@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		<!--1，要使兄弟之间通信，很简单，只要公用一套数据、
+				就行了
+				const sourceOfTruth = {};
+				const vmA = new Vue({
+				  data: sourceOfTruth
+				});
+				const vmB = new Vue({
+				  data: sourceOfTruth
+				});
+				子组件可以通过 this.$root.$data 去访问
+				这样b修改了data,a也知道，a修改了，b也知道
+				
+				但是这样数据修改，不会留下任何痕迹，不方便调试
+				改良如下
+				
+			-->
+		<div id="example1" >
+			<one :num="sharedState.num" :private-value="privateState"></one>
+		</div>
+		
+		<div id="example2" >
+			<one :num="sharedState.num" :private-value="privateState"></one>
+		</div>
+		
+		
+		<script>
+			
+			/*
+			 2, 改良如下
+			 	将数据放到一个外部变量,
+			 	数据的变动通过 action触发，不要直接修改state
+			 	在action 对需要的日志进行输出
+			 	
+			 	vue为我们封装好了 一个专门的插件  vuex
+			 * */
+			
+			var store = {
+				debug : true,
+				state : {
+					num : 10,
+				},
+				increaseAction(){
+					if (this.debug) console.log('这里日志输出'+'当前的num:'+this.state.num)
+					this.state.num ++;
+				},
+				discreaseAction(){
+					if (this.debug) console.log('这里日志输出'+'当前的num:'+this.state.num)
+					this.state.num--;
+				}
+			};
+			
+			Vue.component('one',{
+				props : ['num','privateValue'],
+				template : `<div>
+						<span>当前值{{num}}</span>
+						<button @click="increase">增加</button>
+						<span>私有值{{privateValue}}</span>
+					</div>`,
+				methods : {
+					increase : function(){
+						store.increaseAction();
+					}
+				}
+			});
+			
+			var example1 = new Vue({
+				el : '#example1',
+				data : {
+					sharedState: store.state,
+					privateState: 'one'
+				}
+			});
+			
+			var example2 = new Vue({
+				el : '#example2',
+				data : {
+					sharedState: store.state,
+					privateState: 'two'
+				}
+			});
+		</script>
+	</body>
+</html>

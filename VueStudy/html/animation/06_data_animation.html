@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+		<script src="https://cdn.jsdelivr.net/npm/tween.js@16.3.4"></script>
+		<script src="https://cdn.jsdelivr.net/npm/color-js@1.0.3"></script>
+		<style>
+			.example-2-color-preview {
+			  	display: inline-block;
+			  	width: 50px;
+			  	height: 50px;
+			}
+		</style>
+	</head>
+	<body>
+		
+		<!-- 1, 数据元素本身 
+				1数字和运算
+				2颜色的显示
+				3元素的大小和其他的属性
+			所有的原始数字都被事先存储起来，
+			可以直接转换到数字。做到这一步，
+			我们就可以结合 Vue 的响应式和组件系统，
+			使用第三方库来实现切换元素的过渡状态。	
+		-->
+		<div id="example">
+			<input v-model.number="number" type="number" step="20">
+			<p>{{ animatedNumber }}</p>
+		</div>
+		
+		<!-- 如果对于不是数字这种，可以直接运算的 -->
+		<div id="example2">
+			<input
+			    v-model="colorQuery"
+			    @keyup.enter="updateColor"
+			    placeholder="请选择一种颜色"
+			>
+			<button @click="updateColor">确定</button>
+			 <p>预览:</p>
+			 <span
+			    v-bind:style="{ backgroundColor: tweenedCSSColor }"
+			    class="example-2-color-preview"
+			 ></span>
+			 <p>{{ tweenedCSSColor }}</p>
+		</div>
+		
+		
+		<script>
+			var example = new Vue({
+				el : '#example',
+				data : {
+					number: 0,
+    				animatedNumber: 0
+				},
+				watch: {
+					number: function(newValue, oldValue) {
+						var vm = this;
+						function animate () {
+					        if (TWEEN.update()) {
+					          requestAnimationFrame(animate)
+					        }
+					    };
+						
+						new TWEEN.Tween({ tweeningNumber: oldValue })
+							.easing(TWEEN.Easing.Quadratic.Out)
+							.to({ tweeningNumber: newValue }, 500)
+							.onUpdate(function () {
+								vm.animatedNumber = this.tweeningNumber.toFixed(0)
+							})
+							.start();
+						animate();
+					}
+				}
+			});
+			
+			var Color = net.brehaut.Color;
+			var example2 = new Vue({
+				el : '#example2',
+				data : {
+					colorQuery: '',
+				    color: {
+				    	red: 0,
+				      	green: 0,
+				      	blue: 0,
+				      	alpha: 1
+				    },
+    				tweenedColor: {}
+				},
+				created: function () {
+				    this.tweenedColor = Object.assign({}, this.color)
+				},
+				watch: { 
+					color : function(){
+						function animate () {
+					        if (TWEEN.update()) {
+					          requestAnimationFrame(animate)
+					        }
+					    }
+						
+						new TWEEN.Tween(this.tweenedColor)
+				        .to(this.color, 750)
+				        .start();
+				        
+				         animate();
+						
+					}
+				},
+				computed: {
+					tweenedCSSColor: function () {
+				      	return new Color({
+				        	red: this.tweenedColor.red,
+				        	green: this.tweenedColor.green,
+				        	blue: this.tweenedColor.blue,
+				        	alpha: this.tweenedColor.alpha
+				      	}).toCSS();
+				    },
+				},
+				methods: {
+					updateColor: function () {
+						this.color = new Color(this.colorQuery).toRGB()
+      					this.colorQuery = ''
+					}
+				}
+			});
+		</script>
+		
+	</body>
+</html>

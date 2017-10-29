@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		
+		<div id="example" >
+			<!-- 8，非 prop 特性 可以直接传入组件 既你给组件添加的属性，
+				会完整的添加到子组件身上 如下面的titile style
+			-->
+			<child prop-d="props" v-bind:prop-g="30" title="标题" style="font-size: 40px;"></child>
+		</div>
+		
+		<script>
+			
+			/* prop 验证 */
+			
+			Vue.component('child',{
+				props :{
+					/* 1, 限制类型 还有Boolean Function Object Array Symbol */
+					propA : String,
+					propB : Number,
+					/* 2, 多种类型的其中一个 */
+					propC: [Function,Object],
+					/* 3, 必须传递的 */
+					propD :{
+						type : String,
+						required : true,
+					},
+					/* 4, 没有传递时，有默认值*/ 
+					propE : {
+						type : Number,
+						default : 100,
+					},
+					/* 5, 数组/对象的默认值应当由一个工厂函数返回*/
+					propF : {
+						type : Object,
+						default : function(){
+							return { 'name' : 'LCN' };
+						}
+					},
+					/* 6,自定义函数进行数据验证 */
+					propG :{
+						validator: function (value) {
+					    	return value > 10
+					    }
+					}
+					
+					/* 7，prop 会在组件实例创建之前进行校验
+					 	所以在 default 或 validator 函数里，
+					 	诸如 data、computed 或 methods 等实例属性还无法使用
+					 * */
+					
+				},
+				template : '<span style="color:red;">{{propF.name}}的消息有{{propE-propG}}</span>',
+			});
+			
+			var exaxmple = new Vue({
+				el :"#example",
+				data : {
+					
+				},
+			});
+		</script>
+		
+	</body>
+</html>
+

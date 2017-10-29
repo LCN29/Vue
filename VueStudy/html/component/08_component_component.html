@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		
+		<div id="example" >
+			<!-- 1，component标签 配合上 is 可以让多个组件进行切换 
+				currentData 对应了 组件的名字，用is绑定了currentData
+				currentData 值为哪个 就显示哪个
+			-->
+			<component :is="currentData"></component>
+			
+			<!--2，keep-alive 作用 把切换出去的组件保留在内存中
+				可以保留它的状态或避免重新渲染
+				如 home,点击后背景变换，这是点击me,切换到me，在dom
+				中home已经被移除了，这是在点击home，切换回到home,
+				一开始给home添加被背景不见了，home重新渲染了
+				加上 <keep-alive>可以避免这种情况
+			-->
+			
+			<!--3, 属性
+				include 字符串或正则表达式 只有匹配的组件会被缓存
+			    exclude 字符串或正则表达式。任何匹配的组件都不会被缓存
+				使用 include="a,b" 字符串
+			 	:inclued = "/a|b/" 正则 v-bind
+			 	:inclued= "['a','b']"  数组 v-bind
+			-->
+			<keep-alive include='home,me' :exclude='/buy/'>
+				<component :is="currentData"></component>
+			<keep-alive>
+				
+			<!--4
+				异步组件  网络资源加载完，才渲染，执行回调 resolve函数
+				 Vue.component('async-example', function (resolve, reject) {
+				  	setTimeout(function () {
+				    // 将组件定义传入 resolve 回调函数
+				    	resolve({
+				      		template: '<div>I am async!</div>'
+				    	})
+				  	}, 1000)
+				})
+			-->
+			
+			<!--5，
+				使用webpack  
+				Vue.component(
+				  'async-webpack-example',
+				  () => import('./my-async-component'),  //会返回一个Promise对象
+				)
+			-->
+			
+			<!--
+				6，
+				高级异步组件 工厂函数也可以返回一个如下的对象
+				const AsyncComp = () => ({
+				  // 需要加载的组件。应当是一个 Promise
+				  component: import('./MyComp.vue'),
+				  // 加载中应当渲染的组件
+				  loading: LoadingComp,
+				  // 出错时渲染的组件
+				  error: ErrorComp,
+				  // 渲染加载中组件前的等待时间。默认：200ms。
+				  delay: 200,
+				  // 最长等待时间。超出此时间则渲染错误组件。默认：Infinity
+				  timeout: 3000
+				});
+			-->
+		</div>
+		
+		<script>
+			var exaxmple = new Vue({
+				el :"#example",
+				data : {
+					currentData : 'home',
+				},
+				/*component 里面有多个组件*/
+				components :{
+					home : {
+						template : '<p>home</p>'
+					},
+					buy : {
+						template : '<p>buy</p>'
+					},
+					me : {
+						template : '<p>me</p>'
+					}
+				}
+			});
+		</script>
+		
+	</body>
+</html>

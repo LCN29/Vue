@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		
+		<div id="vonce">
+			<!--
+				v-once 标签的内容 和其子标签的内容只会渲染一次
+				后面 对应的data改变时，他的值不会跟着改变
+			-->
+			<p v-once>消息：{{msg}}</p>
+			
+			<!-- 有子元素 -->
+			<div v-once>
+			  <h1>comment</h1>
+			  <p>{{msg}}</p>
+			</div>
+			
+			<!-- `v-for` 指令-->
+			<ul>
+			  <li v-for="i in list" v-once>{{i}}</li>
+			</ul>
+			
+		</div>
+		
+		<script>
+			
+			var vonce = new Vue({
+				el : '#vonce',
+				data : {
+					msg : '消息',
+					list : [1,2,3,4]
+				}
+			});
+			
+		</script>
+	</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		
+		<div id="example">
+			<!-- 1，给 props 传递值    props里面的值 不需要每个都赋值 -->
+			<child message='消息'></child>
+			<!-- 2，当组件props为驼峰式， 赋值时，需要改成 烤串式，既 a-b格式-->
+			<child my-message='驼峰消息'></child>
+			<!-- 3, 动态绑定属性 => v-bind -->
+			<child :message="message"></child>
+			<!-- 4, 可以直接给组件传过去一个obj-->
+			<child v-bind="obj" ></child>
+			<!-- 5,传递 JavaScript数值 如num="1" 1需要的是number,
+				 但是传过去的是字符串，可以用v-bind 解决	
+				下面2个传递过去的值的类型是不一样的 String Number
+			-->
+			<child num = "1"></childe>
+			<child :num = "1" ></child>
+			<!--6,props的传递是单向的，只能从父级到子级
+				父级的更新，子级所用的prop都会改变
+				所以不要在子级里面修改prop的值，否则会警告
+				容易修改props的情况
+				1，Prop 作为初始值传入后，子组件想把它当作局部数据来用
+				解决
+				props: ['initialCounter'],
+				data: function () {
+					   return { counter: this.initialCounter }
+					 }
+				需要时修改counter就行了
+				2，Prop 作为原始数据传入，由子组件处理成其它数据输出
+				解决 定义一个 计算属性，处理完props并返回
+				props: ['size'],
+				computed: {
+				  normalizedSize: function () {
+				    return this.size.trim().toLowerCase()
+				  }
+				}
+				
+				另一个不要修改props的原因 ：JavaScript 中对象和数组是引用类型，
+				指向同一个内存空间，如果 prop 是一个对象或数组，在子组件内部改
+				变它会影响父组件的状态。
+			-->
+		</div>
+
+		<script>
+			
+			Vue.component('child',{
+				props : ['message','myMessage'],
+				template : '<span>{{message}} {{myMessage}} <br/></span>',
+			});
+			
+			var example = new Vue({
+				el : '#example',
+				data : {
+					message : '动态消息',
+					obj : {
+						message : '消息',
+						myMessage : '我的消息'
+					}
+				}
+			});
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		
+		<div id="example" >
+			<p>{{ total }}</p>
+			<!-- 3，通过v-on:'自定义事件' 绑定自定义事件  触发自身的incrementTotal方法-->
+			<button-counter v-on:increment="incrementTotal"></button-counter>
+			<button-counter v-on:increment="incrementTotal"></button-counter>
+			
+			<br />
+			
+			<!-- 5,.native 给组件传递原生事件，既子级通知父级，让其原生事件触发 -->
+			<button-counter v-on:click.native="myClick"></button-counter>
+			
+			<br />
+			
+			<!-- 
+				6,.sync 能够让子组件更新父级的data 搭配上prop可以做到双向绑定
+				:value值.sync  则子控件修改这个value值
+			-->
+			<dobule-btn :value.sync="value"></dobule-btn>
+			{{value}}
+			<!-- 
+				8, 子组件修改了父级的value，动态绑定的，
+				value改变了，通过prop传给了子组件，子组件
+				的props的value也改变了
+			-->
+			<dobule-btn :value="value"></dobule-btn>
+		</div>
+		
+		<script>
+			
+			Vue.component('button-counter',{
+				/* 1,button 点击触发自身的 increment事件 */
+				template : '<button @click="increment" >{{counter}}</button>',
+				data: function () {
+					return {
+						counter: 0
+					}
+				},
+				methods: {
+					increment : function(){
+						this.counter += 1;
+						/* 2,触发父级的increment事件 */
+						this.$emit('increment');
+						
+						/* 6,同样的，让子控件触发父级的原生事件 */
+						this.$emit('click');
+					}
+				}
+			});
+			
+			Vue.component('dobule-btn',{
+				template : '<button @click="sonClick" >{{value ? value : "默认"}}</button>',
+				props : {
+					value : String,
+				},
+				methods: {
+					sonClick : function(){
+						/*  7,this.$emit('update:value（对应的key值）', newValue(想要变成的值));
+						 * 通过这个可以子组件可以修改父级的value值
+						 */
+						this.$emit('update:value', "子级传给父级的值");
+					}
+				}
+			});
+			
+			/*
+			 * 4，每个 Vue 实例都实现了事件接口，即可以使用 $on(eventName) 
+			 * 监听事件 就不用想上面一样声明 v-on:increment="incrementTotal";
+			 */
+			var exaxmple = new Vue({
+				el :"#example",
+				data : {
+					total: 0,
+					value : 'value值',
+				},
+				methods : {
+					incrementTotal: function () {
+				    	this.total += 1
+					},
+					myClick : function(){
+						alert('子组件让父级的点击事件触发了');
+					}
+				}
+			});
+		</script>
+		
+	</body>
+</html>

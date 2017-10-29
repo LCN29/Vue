@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		
+		<div id="example" >
+			{{message|capitalize}}
+			<!-- 多个过滤器写法，和传递参数 -->
+			{{message|capitalize|addNum(12)}}
+		</div>
+		
+		
+		<script>
+			var example = new Vue({
+				el : '#example',
+				data : {
+					message : 'abcdefghijklmnopqrstuvwxyz',
+				},
+				filters: {
+					capitalize: function (value) {
+						if (!value) return '';
+						value = value.toString();
+						return value.charAt(0).toUpperCase() + value.slice(1)
+					},
+					addNum : function(value,num){
+						if (!value) return '';
+						value = value.toString();
+						return value+num;
+					}
+				}
+			});
+		</script>
+	</body>
+</html>

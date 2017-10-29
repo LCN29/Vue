@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+	</head>
+	<body>
+		
+		<div id="vtext">
+			
+			<p>{{message}}</p>
+			<p v-text="message"/>
+			
+			<!--
+				v-text 作用 和 {{data}}一样 用于将data里面的数据显示出来
+				格式 <标签 v-text='key值'></标签>
+			-->
+		</div>
+		
+		<script>
+			
+			var vtext = new Vue({
+				el : '#vtext',
+				data : {
+					message : '消息',
+				},
+			});
+			
+		</script>
+	</body>
+</html>

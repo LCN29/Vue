@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../../js/vue.js" ></script>
+		<style>
+			.bg {
+				background: yellow;
+			}
+		</style>
+	</head>
+	<body>
+		
+		<div id="example">
+			
+		</div>
+		
+		<script type="text/javascript">
+			
+			/*
+			 	createElement(String,[Object],[Array]);
+			 	arg1 String  元素的标签
+			 	arg2 Object  元素的属性
+			 	arg3 Array	 子元素 ，可以为一个createElement();
+			 	可以继续向下二级元素
+			 */
+			
+			var example = new Vue({
+				el : '#example',
+				render(createElement){
+					return createElement(
+						"ul",
+						{
+							/* class的绑定和:class 一样  { class名 ： 布尔值 } */
+							class : { 
+								bg : true
+							},
+							style : {
+								/* style 和 :style一样，注意驼峰写法 */
+								fontSize : '50px'
+							},
+							attrs : {
+								/*自定义属性*/
+								'title' : '标题'
+							},
+							domProps :{
+								/* 可以运用这个标签的属性 如innerHTML,会覆盖
+								 	他的子级， 
+								 	如 input 的 value
+								 * */
+								innerHTML : '12333'
+							},
+							on : {
+								click : function(){ alert(123);}
+							}
+						},
+						[
+							createElement(
+								'li',
+								['1']
+							),
+							createElement(
+								'li',
+								['2']
+							),
+							createElement(
+								'li',
+								['3']
+							),
+						]
+					);
+				}
+			});
+			
+			/*
+			 	组件树中的所有 VNodes 必须是唯一的,下面的写法会出错
+			 	
+			 	//创建了一个vNodes
+			 	
+			 	var myParagraphVNode = createElement('p', 'hi');
+			 	return createElement('div', [
+    				// 错误-重复的 VNodes
+    				myParagraphVNode, myParagraphVNode
+  				])
+  				
+  				如果需要多个 可以通过 数组.map()进行返回
+			 */
+			
+			/*
+			 	在 render里面 大部分的指令都没有作用，需要自己完成
+			 	但是 v-on的修饰符.passive、.capture 和 .once 可以使用，
+			 	但是需要使用使用对应的符号
+			 	
+			 	.passive			&
+				.capture			!
+				.once				~
+				.capture.once or
+				.once.capture		~!
+			 	
+			 	on: {
+				  	'!click': this.doThisInCapturingMode,
+				  	'~keyup': this.doThisOnce,
+				  	`~!mouseover`: this.doThisOnceInCapturingMode
+				}
+			 */
+			
+			/*
+			 	插槽  https://cn.vuejs.org/v2/guide/render-function.html#插槽
+			 * */
+		</script>
+	</body>
+</html>
