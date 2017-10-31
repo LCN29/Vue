@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../js/vue.js" ></script>
+		<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+		<style>
+			
+		</style>
+	</head>
+	<body>
+		
+		<!--
+			路由组件传参 
+			使用 {{ $route.params.id }} 形成高度耦合
+		-->
+		<div id="app">
+			<p>
+				<router-link to="/user/foo">Go to Foo</router-link>
+				<router-link to="/user/bar">Go to Bar</router-link>
+			</p>
+			<router-view></router-view>
+		</div>
+		
+		
+		
+		<script>
+			
+			const User = {
+				props: ['id'],
+				template : '<div>User:  {{id}}</div>'
+			};
+			
+			const routes = [
+				/* 
+				 * 设置 props：true route.params将会被设置为组件属性
+				 * 组件在 props声明完，就可以使用了，
+				 */
+				{ path: '/user/:id', component: User, props: true},
+				
+				/*
+				 	当使用了视图时，需要单独给每个视图设置props
+				 	{
+				       path: '/user/:id',
+				       components: { 
+				       		default: User,
+				       		sidebar: Sidebar 
+				       }
+				       props: { 
+				       		default: true, 
+				       		sidebar: false 
+				       }
+				    }
+				 */
+			];
+			
+			const router = new VueRouter({
+				routes
+			});
+			
+			var app = new Vue({
+				router
+			}).$mount('#app');
+			
+			/*
+			 	对象模式
+			 	如果props是一个对象，它会被按原样设置为组件属性。
+			 	当props是静态的时候有用。
+			 	props: { newsletterPopup: false }
+			 */
+			
+			/*
+			 	函数模式
+			 	Url: /search?q=vue 会将 {query: "vue"} 
+			 	作为属性传递给SearchUser组件。
+			 	props: (route) => ({ query: route.query.q }) }
+			 */
+			
+		</script>
+	</body>
+</html>

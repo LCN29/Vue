@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		
+		<script type="text/javascript" src="../js/vue.js" ></script>
+		<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+		<style>
+			
+		</style>
+	</head>
+	<body>
+		
+		<!-- 路由嵌套 /user/foo/profile 和/user/foo/posts-->
+		
+		<div id="app">
+			
+			<p>
+				<router-link to="/user/foo" >/user/foo</router-link>
+				<router-link to="/user/foo/profile">/user/foo/profile</router-link>
+				<router-link to="/user/foo/posts">/user/foo/profile</router-link>
+			</p>
+			
+			<router-view></router-view>
+		</div>
+		
+		
+		
+		<script>
+			
+			const User = {
+				/* 已知页面中的 router-view为顶层出口，为了让
+				 	其让路由的下一级可以继续显示，在模板的里面
+				 	需要在有一个router-view 给子级显示用
+				 * */
+				template: `
+					<div>
+						<h2> User : {{ $route.params.id }} </h2>
+						<router-view></router-view>
+					</div>
+				`,
+			};
+			
+			const UserHome = { template: '<div>Home</div>' };
+			const UserProfile = { template: '<div>Profile</div>' };
+			const UserPosts = { template: '<div>Posts</div>' };
+			
+			const router = new VueRouter({
+				routes : [
+					{ 
+						path: '/user/:id', component: User,
+						//路由下一级，需要用children 包起来，说明是在他的下一级
+						children : [
+						
+							{ path : '', componet : UserHome},
+							/*
+							 	当路由为 /user/foo/profiele 和这个匹配
+							 	将组件UserProfile渲染到其父级User的router-view
+							 	中，
+							*/
+							{ path : 'profile', component : UserProfile},
+							
+							/*
+							 	同理的如果这一级下面还有下一级，可以在组件内再
+							 	声明router-view，在路由的children 在说明
+							 */
+							{ path : 'posts', component: UserPosts },
+							
+							// 注 在 子路由下面的路径，不要带/ ,以 / 开头的嵌套路径会被当作根路径
+						]
+					}
+				],
+			});
+			
+			
+			const app = new Vue({
+				router,
+			}).$mount('#app');
+			
+		</script>
+	</body>
+</html>

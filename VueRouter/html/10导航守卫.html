@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		
+		<script type="text/javascript" src="../js/vue.js" ></script>
+		<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+		<style>
+			
+		</style>
+	</head>
+	<body>
+		
+		<!--
+			完整的导航解析流程
+			1.导航被触发。
+			2.在失活的组件里调用离开守卫。
+			3.调用全局的 beforeEach 守卫。
+			4.在重用的组件里调用 beforeRouteUpdate 守卫 (2.2+)。
+			5.在路由配置里调用 beforeEnter。
+			6.解析异步路由组件。
+			7.在被激活的组件里调用 beforeRouteEnter。
+			8.调用全局的 beforeResolve 守卫 (2.5+)。
+			9.导航被确认。
+			10.调用全局的 afterEach 钩子。
+			11.触发 DOM 更新。
+			12.用创建好的实例调用 beforeRouteEnter 守卫中传给 next 的回调函数。
+			
+			流程
+			导航开始->A没有被复用的组件内的离开守卫beforeRouteLeave 触发 ->
+			B调用全局的beforeEach->C组件是重用的调用 beforeRouteupdata->
+			D调用路由配置里面的BeforeEnter->E被激活的组件调用beforeRouteEnter
+			->F全局的BeforeResolve->导航完成->G调用全局的afterEach->
+			H触发beforeRouteEnter的next函数
+			
+			
+			A注册组件内的离开守卫
+			
+			const Foo = {
+				 template: `...`,
+				 
+				 beforeRouteEnter (to, from, next) {
+				 	//不！能！获取组件实例 `this`
+				 },
+				 
+				 beforeRouteUpdate (to, from, next) {
+				 	// 在当前路由改变，但是该组件被复用时调用
+				 },
+				 
+				 beforeRouteLeave (to, from, next) {
+				 	//离开守卫
+				 }
+			};
+			
+			
+			
+			B注册一个全局前置守卫
+			const router = new VueRouter({ ... })
+			router.beforeEach((to, from, next) => {});
+			
+			C 见A的beforeRouteUpdate
+			
+			D  注册配置里面的BeforeEnter
+			const router = new VueRouter({
+				 routes: [{
+				 	path: '/foo',
+				 	component: Foo,
+				 	beforeEnter: (to, from, next) => {
+				 		
+				 	}，
+				 }],
+			});
+			
+			E 见 A的beforeRouteEnter
+			
+			F 注册一个全局前置守卫
+			const router = new VueRouter({ ... })
+			router.beforeResolve((to, from, next) => {});
+			beforeResolve在导航被确认之前，
+			同时在所有组件内守卫和异步路由组件被解析之后，
+			解析守卫就被调用。
+			
+			
+			
+			G 注册一个全局后置钩子
+			router.afterEach((to, from) => {
+			  	// ...
+			})
+			
+			H beforeRouteEnter 的 next触发了
+		-->
+		<div id="app">
+			
+		</div>
+		
+		
+		
+		<script>
+			
+		</script>
+	</body>
+</html>

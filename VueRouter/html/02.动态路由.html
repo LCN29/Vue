@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		
+		<script type="text/javascript" src="../js/vue.js" ></script>
+		<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+		<style>
+			
+		</style>
+	</head>
+	<body>
+		
+		<!--
+			动态路由，相同的一个路由，参数不一样，
+			加载同一个模块，但是内容不一样
+		-->
+		<div id="app">
+			<p>
+				<router-link to="/user/foo">/user/foo</router-link>
+				<br />
+				<router-link to="/user/bar">/user/bar</router-link>
+			</p>
+			<router-view></router-view>
+		</div>
+		
+		<script>
+			const User = {
+				//2，参数获取 $route.params.对应的key值
+				template : '<div>User:  {{$route.params.id}}</div>'
+			};
+			
+			const router = new VueRouter({
+				routes : [
+				// 1，动态路径参数 以冒号开头 说明user/后面的为参数
+				// 多个参数 user/:id/age/:num
+					{path:'/user/:id', component : User},
+				]
+			});
+			
+			const app = new Vue({
+				router,
+			}).$mount('#app');
+			
+			/*
+			 	当使用路由参数时，例如从 /user/foo 导航到 user/bar，
+			 	原来的组件实例会被复用,这也意味着组件的生命周期钩子
+			 	不会再被调用
+			 	可以简单地 watch（监测变化） $route 对象
+			 	
+			 	const User = {
+  					template: '...',
+  					 watch: {
+  					 	'$route' (to, from) {
+  					 		 // 对路由变化作出响应...
+  					 	}
+  					 }
+  				};
+  				
+  				或者使用beforeRouteUpdate守卫
+  				const User = {
+  					template: '...',
+  					beforeRouteUpdate (to, from, next) {
+  						//路由处理
+  						next();
+  					}
+  				};
+			*/
+			
+			
+			/*
+			 	当业务复杂时 可以引入 path-to-regexp 这个插件
+			 	进行高级匹配模式，支持正则，动态匹配个数等
+			 	文档 https://github.com/pillarjs/path-to-regexp#parameters
+			 	例子https://github.com/vuejs/vue-router/blob/next/examples/route-matching/app.js
+			 * */
+			
+			
+		</script>
+		
+		
+	</body>
+</html>

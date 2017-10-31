@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		
+		<script type="text/javascript" src="../js/vue.js" ></script>
+		<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+		<style>
+			
+		</style>
+	</head>
+	<body>
+		
+		<!-- 
+			别名 
+			/a 设置别名是 /b 当用户访问 /b 时  URL 会保持为 /b，
+			但是路由匹配则为 /a  就像用户访问 /a 一样
+			
+		-->
+		<div id="app">
+			<router-link to="/foo">访问Foo</router-link>
+			<router-link to="/bar">访问/bar，当时显示的内容为/foo</router-link>
+			<router-view></router-view>
+		</div>
+		
+		
+		
+		<script>
+			const Foo = { template: '<div>foo</div>' };
+			const Bar = { template: '<div>bar</div>' };
+			
+			const routes = [
+			//所有的/bar 都是访问/foo  当时 url上显示的却是 /bar
+				{ path: '/foo', component: Foo, alias: '/bar'},
+			];
+			
+			const router = new VueRouter({
+				routes
+			});
+			
+			var app = new Vue({
+				router
+			}).$mount('#app');
+		</script>
+	</body>
+</html>

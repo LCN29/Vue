@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="../js/vue.js" ></script>
+		<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+		
+		<style>
+			.router-link-active {
+			  	color: red;
+			}
+		</style>
+	
+	</head>
+	<body>
+		<!-- 基本使用 -->
+		<div id="app">
+			<h1>Hello App!</h1>
+			<p>
+				<!--
+					1,导航都用 router-link 
+					to 指定的链接， /foo 在当前链接后面添加/foo
+					注：当 to="www.baidu.com" 也只是在后面添加 /www.baidu.com
+					不会跳转到百度，
+					router-link 在dom中会被渲染成一个a标签
+				-->
+				<router-link to="/foo">Go to Foo</router-link>
+				<router-link to="/bar">Go to Bar</router-link>
+			</p>
+			<!--6，最终效果会渲染在这个标签内 本身不渲染 -->
+			<router-view></router-view>
+		</div>
+		
+		
+		<script>
+			
+			/* 2. 定义（路由组件）可以通过import从其他文件导入
+			 	显示的样子
+			 * */
+			const Foo = { template: '<div>foo</div>' };
+			const Bar = { template: '<div>bar</div>' };
+			
+			// 3. 定义路由
+			const routes = [
+				{path : '/foo',component : Foo},
+				{ path: '/bar', component: Bar }
+			];
+			
+			// 4. 定义路由
+			const router = new VueRouter({
+				routes
+			});
+			
+			// 5. 创建和挂载根实例。
+			var app = new Vue({
+				router
+			}).$mount('#app');
+			
+			
+			/*
+			 	router-link 属性
+			 	
+			 	to
+			 (1) 路径为一个js表达式
+			 	<router-link :to="'home'">Home</router-link>
+			 
+			 （2)  另一种格式
+			 	<router-link to="{ path: 'home' }">Home</router-link>
+			 
+			 (3)带查询参数，下面的结果为 /a?p=s
+  				<router-link to="{ path: 'a', query: { p: 's }}"></router-link>
+			 
+			 (4)命名的路由 需要在路由中设置好name,才可以使用
+  				<router-link :to="{ name: 'user', params: { userId: 123 }}">User</router-link>
+			 
+			 
+			 	replace 
+			 	默认使用的是router.push() 会在 history中添加记录
+			 	写入 replace 使用 router.replace() 不会写入记录
+			 	
+			 	
+			 	append 
+			 	当前（相对）路径前添加基路径 既用于同级路径
+			 	如 
+			 	<router-link :to="{ path: 'relative/path'}"></router-link>
+			 	当前为 http:localhost:90/a
+			 	点击了跳转到  /a/relative/path
+			 	加入 append
+			 	跳转到
+			 	/relative/path （跳到和a同级的relative下的path）
+			 	
+			 	
+			 	tag
+			 	<router-link> 默认渲染为a 也可以通过tag="li"等进行修改
+			 	
+			 	active-class
+			 	激活的a标签可以添加的class
+			 	
+			 	exact  event exact-active-class
+			 */
+			
+			
+			
+			/*
+			 	<router-link tag="li" to="/foo">
+				  <a>/foo</a>
+				</router-link>
+				
+				在这种情况下，<a> 将作为真实的链接（它会获得正确的 href 的）
+				"激活时的CSS类名" 则设置到外层的 <li>
+			 */
+		</script>
+	</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		
+		<script type="text/javascript" src="../js/vue.js" ></script>
+		<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+		<style>
+			
+		</style>
+	</head>
+	<body>
+		
+		<!--
+			重定向  当用户访问 /a时，URL 将会被替换成 /b，然后匹配路由为 /b
+		-->
+		
+		<div id="app">
+			<router-link to="/foo">访问Foo</router-link>
+			<router-link to="/bar">访问bar,重定向访问到foo</router-link>
+			<router-view></router-view>
+		</div>
+		
+		
+		
+		<script>
+			const Foo = { template: '<div>foo</div>' };
+			const Bar = { template: '<div>bar</div>' };
+			
+			const routes = [
+				{ path: '/foo', component: Foo},
+				//访问的是bar是，让路由转到 /foo
+				{ path: '/bar', redirect:'/foo'}
+			];
+			
+			const router = new VueRouter({
+				routes
+			});
+			
+			var app = new Vue({
+				router
+			}).$mount('#app');
+			
+			/*
+				重定向的目标也可以是一个命名的路由：
+			 	{ path: '/a', redirect: { name: 'foo' }}
+			 	
+			 	
+			 	也可以是一个方法，动态返回重定向目标
+			 	routes: [
+			 		{ path: '/a', redirect: to => {
+			 			
+			 			// 方法接收 目标路由 作为参数
+			 			
+			 			 // return 重定向的 字符串路径/路径对象
+			 		} },
+			 	];
+			 */
+			
+		</script>
+	</body>
+</html>

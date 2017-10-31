@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		
+		<script type="text/javascript" src="../js/vue.js" ></script>
+		<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+		<style>
+			
+		</style>
+	</head>
+	<body>
+		
+		<!--
+			定义路由的时候可以配置 meta 字段：
+			const router = new VueRouter({
+				routes: [
+					{
+						path: '/foo',
+      					component: Foo,
+      					children: [
+      						{
+      							path: 'bar',
+          						component: Bar,
+          						meta: { requiresAuth: true }
+      						}
+      					]
+					},
+				],
+			});
+			
+			
+			meta : 路由元信息字段
+			requiresAuth 是自己起的字段名称，
+			用来标记这个路由信息是否需要检测，
+			true 表示要检测，false 表示不需要检测
+			
+			使用 
+			new Vue({
+			  el: '#app',
+			  router,
+			  template: '<App/>',
+			  components: { App },
+			  render: h => h(App),
+			  created () {
+			    this.redrct()
+			  },
+			  methods: {
+			  	redrct () {
+			  		
+			  		router.beforeEach((to, from, next) => {
+			  			
+			  			一个路由匹配到的所有路由记录会暴露为 $route 对象
+			  			在$route.matched 数组 ，
+			  			//遍历所有路由记录找到当前的 ，当前的meta中设置了true,要验证
+			  			if (to.matched.some(record => record.meta.requiresId)) {
+			  				if (!this.loggedIn()) {  // 自己的判断条件 当前为登录
+			  					next({
+					              path: '/', // 重定向后的路由
+					              query: { redirect: to.fullPath } // 登录成功之后可以根据query中的内容跳转回原来的路由(页面)
+					            })
+			  				}else {
+					            next()
+					        }
+			  			}else {
+				          	next() // 确保一定要调用 next()
+				        }
+			  		});
+			  	},
+			  	
+			  	loggedIn () {
+			  		 var id = sessionStorage.getItem('userId')
+				     if (id === null) { // 未登录
+				        return false
+				     }
+				     return true
+			  	}
+			  }
+			});
+			
+		-->
+		
+		<div id="app">
+			
+		</div>
+		
+		
+		
+		<script>
+			
+		</script>
+	</body>
+</html>

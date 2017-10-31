@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		
+		<script type="text/javascript" src="../js/vue.js" ></script>
+		<script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+		<style>
+			
+		</style>
+	</head>
+	<body>
+		
+		<!-- 编程式导航 -->
+		<div id="app">
+			<h1>Hello App!</h1>
+			
+			<router-link :to="{ name:'foo', params : {userId : 1}}"> Go to Foo </router-link>
+			<router-view></router-view>
+		</div>
+		
+		
+		
+		<script>
+			const Foo = { template: '<div>foo</div>' };
+
+			
+			const router = new VueRouter({
+				routes : [ 
+				// 1，给对应的路径添加一个 name属性
+					{ path : '/foo/:userId', name : 'foo',component: Foo, },
+				]
+			});
+			
+			var app = new Vue({
+				router
+			}).$mount('#app');
+		</script>
+	</body>
+</html>
